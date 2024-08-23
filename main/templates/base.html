@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main-style.css' %}">
+</head>
+<html>
+    <head>
+        <title>Django app</title>
+    </head>
+
+    <body>
+        <section>
+            {% block content %}{% endblock content %}
+        </section>
+        
+        <footer>
+            Implemented and designed by Łukasz Bartsch
+        </footer>
+    </body>
+</html>
