@@ -34,7 +34,7 @@
     <section>
         
         <h4>Average Prices Trend</h4>
-        <canvas id="priceTrendChart" width="400" height="200"></canvas>
+        <canvas id="Price-Trend-Chart" width="400" height="200"></canvas>
         
     </section>
 
@@ -77,23 +77,13 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 
+    const data = JSON.parse('{{ chart_data|safe|escapejs }}');
 
-    let ctx = document.getElementById("priceTrendChart").getContext("2d");
+    let ctx = document.getElementById("Price-Trend-Chart").getContext("2d");
 
     let chart = new Chart(ctx, {
     type: "line",
-    data: {
-        labels: ['2022-01-01', '2022-01-02', '2022-01-03', '2022-01-04'],
-        datasets: [
-            {
-            label: 'Price Trend',
-            borderColor: "#417690",
-            data: [26900, 28700, 27300, 29200],
-            borderWidth: 1,
-            fill: false
-            }
-        ]
-    }
+    data: data.data,
     
     });
 
