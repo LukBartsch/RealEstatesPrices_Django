@@ -31,6 +31,39 @@
     </section>
 
 
+    <section>
+        <h4>Average prices and informations from last scraping</h4>
+        <table class='table table-striped table-bordered table-hover'>
+            <thead>
+                <tr>
+                    <th>Pos.</th>
+                    <th>Data</th>
+                    <th>City</th>
+                    <th>Market</th>
+                    <th>Price m2</th>               
+                    <th>Total price</th>
+                    <th>Rooms</th>
+                    <th>Area</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for offer in latest_offers %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ offer.date }}</td>
+                        <td>{{ offer.city_name }}</td>
+                        <td>{{ offer.market_type }}</td>
+                        <td>{{ offer.m2_price }}</td>
+                        <td>{{ offer.total_price }}</td>
+                        <td>{{ offer.rooms }}</td>
+                        <td>{{ offer.area }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+
 </div>
 
 {% endblock %}
