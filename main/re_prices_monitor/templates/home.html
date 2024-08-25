@@ -3,12 +3,34 @@
 {% block content %}
 <!-- {% load static %} -->
 
-<div className="App">
-    <header className="App-header">
+<div class="App">
 
-        <img src="{% static 'images/django-logo.png' %}" className="App-logo" alt="logo" />
+    <header class="App-header">
+        <img src="{% static 'images/django-logo.png' %}" class="App-logo" alt="logo" />
         <h3>Welcome in Real Estate Prices Monitor Application</h3>
     </header>
+
+    <section>
+        <form method="post" class="Select-Menus-Box">
+            {% csrf_token %}
+
+            <div class="Single-Select-Box">
+                <h4> {{ form.city.label_tag }} </h4>
+                {{ form.city }}
+            </div>
+            <div class="Single-Select-Box">
+                <h4> {{ form.market.label_tag }} </h4>
+                {{ form.market }}
+            </div>
+            <div class="Single-Select-Box">
+                <h4> {{ form.data_type.label_tag }} </h4>
+                {{ form.data_type }}
+            </div>
+            <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+        </form>
+    </section>
+
+
 </div>
 
 {% endblock %}
