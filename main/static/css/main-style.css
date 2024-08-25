@@ -1,0 +1,33 @@
+.App {
+    text-align: center;
+  }
+
+img {
+    height: 8vmin;
+    pointer-events: none;
+    margin-right: 5vmin;
+    }
+
+header {
+    background-color: rgb(16,62,46);
+    min-height: 10vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+    }
+
+footer {
+    background-color: rgb(16,62,46);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    bottom: 0;
+    width: 100%;
+    color: grey;
+    padding: 1vmin;
+}
