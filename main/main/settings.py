@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     're_prices_monitor',
+    'django_select2',
 ]
 
 MIDDLEWARE = [
