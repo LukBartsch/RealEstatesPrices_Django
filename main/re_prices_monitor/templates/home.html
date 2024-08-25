@@ -10,7 +10,7 @@
         <h3>Welcome in Real Estate Prices Monitor Application</h3>
     </header>
 
-    <section>
+    <section class="Section-Box">
         <form method="post" class="Select-Menus-Box" onchange="submit()">
             {% csrf_token %}
 
@@ -31,15 +31,13 @@
     </section>
 
     
-    <section>
-        
+    <section class="Section-Box">
         <h4>Average Prices Trend</h4>
         <canvas id="Price-Trend-Chart" width="400" height="200"></canvas>
-        
     </section>
 
 
-    <section>
+    <section class="Section-Box">
         <h4>Average prices and informations from last scraping</h4>
         <table class='table table-striped table-bordered table-hover'>
             <thead>
