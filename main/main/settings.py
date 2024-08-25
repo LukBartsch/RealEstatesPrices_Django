@@ -12,16 +12,21 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env_file = os.path.join(BASE_DIR, '.env')
+load_dotenv(env_file)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@_$&8h2)pg7$^1+7+4)lxy$%3a)basw(n0z!xbofv0kw$f&nmp'
+#SECRET_KEY = 'django-insecure-@_$&8h2)pg7$^1+7+4)lxy$%3a)basw(n0z!xbofv0kw$f&nmp'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -83,16 +88,31 @@ if DEBUG:
     ]
 
 
+
+#DB_FILE_PATH = os.path.join(base_dir, os.environ.get('DB_FILE_PATH')) # base_dir / os.environ.get('DB_FILE_PATH')
+#SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') + os.environ.get('DB_FILE_PATH')
+
+
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': '3306',
     }
 }
 
+
+#DB_FILE_PATH=22021_RE_prices
+#SQLALCHEMY_DATABASE_URI=mysql://22021:BiegoweSwiry22@sportoweswiry.atthost24.pl/
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
