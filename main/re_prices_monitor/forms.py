@@ -8,20 +8,21 @@ class SelectForm(forms.Form):
         ('option2', 'Option 2'),
         ('option3', 'Option 3'),
     ]
+
     city = forms.MultipleChoiceField(
         choices=OPTIONS, 
         label='Select city', 
-        widget=Select2MultipleWidget,
+        widget=Select2MultipleWidget(attrs={'id': 'id_city'}),
         initial=['option1'])
     
-    market = forms.ChoiceField(
+    market = forms.MultipleChoiceField(
         choices=OPTIONS, 
         label='Select market',
-        widget=Select2MultipleWidget,
+        widget=Select2MultipleWidget(attrs={'id': 'id_market'}),
         initial=['option1'])
     
-    data_type = forms.ChoiceField(
+    data_type = forms.MultipleChoiceField(
         choices=OPTIONS, 
         label='Select data type',
-        widget=Select2MultipleWidget,
+        widget=Select2MultipleWidget(attrs={'id': 'id_data_type'}),
         initial=['option1'])

@@ -15,6 +15,9 @@ class HomeView(View):
     def post(self, request):
         form = SelectForm(request.POST)
         if form.is_valid():
-            city = form.cleaned_data['city']
-            return HttpResponse(f'You selected {city}')
+            # Process the form data
+            selected_cities = form.cleaned_data['city']
+            selected_market = form.cleaned_data['market']
+            selected_data_type = form.cleaned_data['data_type']
+            return render(request, 'home.html', {'form': form})
         return render(request, 'home.html', {'form': form})
