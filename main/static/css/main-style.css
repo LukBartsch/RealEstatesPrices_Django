@@ -2,13 +2,13 @@
     text-align: center;
   }
 
-img {
+.App-logo {
     height: 8vmin;
     pointer-events: none;
     margin-right: 5vmin;
     }
 
-header {
+.App-header {
     background-color: rgb(16,62,46);
     min-height: 10vh;
     display: flex;
@@ -18,6 +18,19 @@ header {
     font-size: calc(10px + 2vmin);
     color: white;
     }
+
+.Select-Menus-Box {
+    display: flex;
+    flex-direction: row;
+    }
+
+.Single-Select-Box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 20px 30px;
+    }
+    
 
 footer {
     background-color: rgb(16,62,46);
