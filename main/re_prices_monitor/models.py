@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 
-class RealEstateAveragePrice(models.Model):
+class RealEstateOffer(models.Model):
     date = models.CharField(max_length=50, blank=True, null=True)
     time = models.CharField(max_length=50, blank=True, null=True)
     city_name = models.CharField(max_length=50, blank=True, null=True)
@@ -20,7 +20,7 @@ class RealEstateAveragePrice(models.Model):
         db_table = 'real_estate_average_price'
 
 
-class HistoricalRealEstatesPrice(models.Model):
+class HistoricRealEstatePrice(models.Model):
     date = models.CharField(max_length=50, blank=True, null=True)
     city_name = models.CharField(max_length=50, blank=True, null=True)
     market_type = models.CharField(max_length=50, blank=True, null=True)
