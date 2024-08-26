@@ -38,6 +38,12 @@
 
 
     <section class="Section-Box">
+        <div id="scatterPlot" style="width: 100%; height: 100vh;"></div>
+        <div id="selectedHistogram" style="width: 100%; height: 50vh;"></div>
+    </section>
+
+
+    <section class="Section-Box">
         <h4>Average prices and informations from last scraping</h4>
         <table class='table table-striped table-bordered table-hover'>
             <thead>
@@ -86,6 +92,365 @@
     });
 
 
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts-gl@2.0.8/dist/echarts-gl.min.js"></script>
+
+
+
+
+<!-- <script>
+    // Funkcja do generowania losowych danych dla wykresu scatter
+    function generateScatterData(numPoints) {
+        const data = [];
+        for (let i = 0; i < numPoints; i++) {
+            const x_value = Math.random() * 100;
+            const y_value = Math.random() < 0.5 ? Math.random() * 30 : 70 + Math.random() * 30;
+            data.push([x_value, y_value]);
+        }
+        return data;
+    }
+
+    // Funkcja do agregacji danych
+    function aggregateData(data, gridSize) {
+        const grid = {};
+        data.forEach(point => {
+            const x = Math.floor(point[0] / gridSize);
+            const y = Math.floor(point[1] / gridSize);
+            const key = `${x},${y}`;
+            if (!grid[key]) {
+                grid[key] = { count: 0, sumX: 0, sumY: 0 };
+            }
+            grid[key].count++;
+            grid[key].sumX += point[0];
+            grid[key].sumY += point[1];
+        });
+        const aggregatedData = [];
+        for (const key in grid) {
+            const cell = grid[key];
+            aggregatedData.push([cell.sumX / cell.count, cell.sumY / cell.count, cell.count]);
+        }
+        return aggregatedData;
+    }
+
+    // Generowanie danych dla wykresu scatter
+    const numPoints = 1000000; // Milion punktów
+    const scatterData = generateScatterData(numPoints);
+
+    // Agregacja danych
+    const gridSize = 1; // Rozmiar komórki siatki
+    const aggregatedData = aggregateData(scatterData, gridSize);
+
+    // Inicjalizacja wykresu scatter
+    const chartDom = document.getElementById('scatterPlot');
+    const myChart = echarts.init(chartDom);
+    const option = {
+        title: {
+            text: 'Aggregated Scatter Plot with 1 Million Points'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: function (params) {
+                return `X: ${params.value[0]}, Y: ${params.value[1]}, Count: ${params.value[2]}`;
+            }
+        },
+        xAxis: {
+            type: 'value',
+            name: 'X Axis'
+        },
+        yAxis: {
+            type: 'value',
+            name: 'Y Axis'
+        },
+        series: [{
+            type: 'scatter',
+            symbolSize: function (val) {
+                return Math.sqrt(val[2]); // Rozmiar punktu zależny od liczby punktów w komórce
+            },
+            data: aggregatedData,
+            itemStyle: {
+                color: 'blue'
+            }
+        }],
+        dataZoom: [
+            {
+                type: 'inside',
+                xAxisIndex: 0,
+                start: 0,
+                end: 100
+            },
+            {
+                type: 'inside',
+                yAxisIndex: 0,
+                start: 0,
+                end: 100
+            },
+            {
+                type: 'slider',
+                xAxisIndex: 0,
+                start: 0,
+                end: 100
+            },
+            {
+                type: 'slider',
+                yAxisIndex: 0,
+                start: 0,
+                end: 100
+            }
+        ],
+        brush: {
+            toolbox: ['rect', 'polygon', 'keep', 'clear'],
+            xAxisIndex: 0,
+            yAxisIndex: 0
+        }
+    };
+
+    // Renderowanie wykresu scatter
+    myChart.setOption(option);
+
+    // Inicjalizacja wykresu histogram dla zaznaczonego obszaru
+    const selectedChartDom = document.getElementById('selectedHistogram');
+    const selectedChart = echarts.init(selectedChartDom);
+    const selectedOption = {
+        title: {
+            text: 'Histogram of Selected Area'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        xAxis: {
+            type: 'category',
+            name: 'Value',
+            data: []
+        },
+        yAxis: {
+            type: 'value',
+            name: 'Frequency'
+        },
+        series: [{
+            type: 'bar',
+            data: []
+        }]
+    };
+
+    // Renderowanie pustego wykresu histogram
+    selectedChart.setOption(selectedOption);
+
+    // Funkcja do obliczania histogramu
+    function calculateHistogram(data, binCount) {
+        const min = Math.min(...data);
+        const max = Math.max(...data);
+        const binSize = (max - min) / binCount;
+        const bins = Array(binCount).fill(0);
+        data.forEach(value => {
+            const binIndex = Math.min(Math.floor((value - min) / binSize), binCount - 1);
+            bins[binIndex]++;
+        });
+        const binEdges = Array.from({ length: binCount }, (_, i) => (min + i * binSize).toFixed(2));
+        return { bins, binEdges };
+    }
+
+    // Obsługa zdarzenia brushSelected
+    myChart.on('brushSelected', function (params) {
+        const selectedData = [];
+        const mainSeries = params.batch[0].selected[0];
+        for (let i = 0; i < mainSeries.dataIndex.length; i++) {
+            selectedData.push(scatterData[mainSeries.dataIndex[i]][0]); // Używamy wartości X do histogramu
+        }
+
+        // Oblicz histogram
+        const binCount = 20; // Liczba koszyków
+        const histogram = calculateHistogram(selectedData, binCount);
+
+        // Aktualizacja wykresu histogram
+        selectedChart.setOption({
+            xAxis: {
+                data: histogram.binEdges
+            },
+            series: [{
+                data: histogram.bins
+            }]
+        });
+    });
+</script> -->
+
+
+
+<script>
+    // Funkcja do generowania losowych danych dla wykresu scatter
+    function generateScatterData(numPoints, startIndex = 0) {
+        const data = [];
+        for (let i = startIndex; i < startIndex + numPoints; i++) {
+            const x_value = Math.random() * 100;
+            const y_value = Math.random() < 0.5 ? Math.random() * 30 : 70 + Math.random() * 30;
+            data.push([x_value, y_value]);
+        }
+        return data;
+    }
+
+    // Generowanie początkowej partii danych dla wykresu scatter
+    const totalPoints = 1000000; // Milion punktów
+    const batchSize = 100000; // Wielkość partii
+    let loadedPoints = 0;
+    let scatterData = generateScatterData(batchSize, loadedPoints);
+    loadedPoints += batchSize;
+
+    // Inicjalizacja wykresu scatter
+    const chartDom = document.getElementById('scatterPlot');
+    const myChart = echarts.init(chartDom);
+    const option = {
+        title: {
+            text: 'Scatter Plot with Lazy Loading'
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter: function (params) {
+                return `X: ${params.value[0]}, Y: ${params.value[1]}`;
+            }
+        },
+        xAxis: {
+            type: 'value',
+            name: 'X Axis'
+        },
+        yAxis: {
+            type: 'value',
+            name: 'Y Axis'
+        },
+        series: [{
+            type: 'scatter',
+            symbolSize: 2,
+            data: scatterData,
+            itemStyle: {
+                color: 'blue'
+            }
+        }],
+        dataZoom: [
+            {
+                type: 'inside',
+                xAxisIndex: 0,
+                start: 0,
+                end: 100
+            },
+            {
+                type: 'inside',
+                yAxisIndex: 0,
+                start: 0,
+                end: 100
+            },
+            {
+                type: 'slider',
+                xAxisIndex: 0,
+                start: 0,
+                end: 100
+            },
+            {
+                type: 'slider',
+                yAxisIndex: 0,
+                start: 0,
+                end: 100
+            }
+        ],
+        brush: {
+            toolbox: ['rect', 'polygon', 'keep', 'clear'],
+            xAxisIndex: 0,
+            yAxisIndex: 0
+        }
+    };
+
+    // Renderowanie wykresu scatter
+    myChart.setOption(option);
+
+    // Funkcja do ładowania kolejnej partii danych
+    function loadMoreData() {
+        if (loadedPoints < totalPoints) {
+            const newData = generateScatterData(batchSize, loadedPoints);
+            scatterData = scatterData.concat(newData);
+            loadedPoints += batchSize;
+            myChart.setOption({
+                series: [{
+                    data: scatterData
+                }]
+            });
+        }
+    }
+
+    // Ładowanie kolejnych partii danych przy przewijaniu
+    myChart.on('dataZoom', function () {
+        loadMoreData();
+    });
+
+    // Inicjalizacja wykresu histogram dla zaznaczonego obszaru
+    const selectedChartDom = document.getElementById('selectedHistogram');
+    const selectedChart = echarts.init(selectedChartDom);
+    const selectedOption = {
+        title: {
+            text: 'Histogram of Selected Area'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        xAxis: {
+            type: 'category',
+            name: 'Value',
+            data: []
+        },
+        yAxis: {
+            type: 'value',
+            name: 'Frequency'
+        },
+        series: [{
+            type: 'bar',
+            data: []
+        }]
+    };
+
+    // Renderowanie pustego wykresu histogram
+    selectedChart.setOption(selectedOption);
+
+    // Funkcja do obliczania histogramu
+    function calculateHistogram(data, binCount) {
+        const min = Math.min(...data);
+        const max = Math.max(...data);
+        const binSize = (max - min) / binCount;
+        const bins = Array(binCount).fill(0);
+        data.forEach(value => {
+            const binIndex = Math.min(Math.floor((value - min) / binSize), binCount - 1);
+            bins[binIndex]++;
+        });
+        const binEdges = Array.from({ length: binCount }, (_, i) => (min + i * binSize).toFixed(2));
+        return { bins, binEdges };
+    }
+
+    // Obsługa zdarzenia brushSelected
+    myChart.on('brushSelected', function (params) {
+        const selectedData = [];
+        const mainSeries = params.batch[0].selected[0];
+        for (let i = 0; i < mainSeries.dataIndex.length; i++) {
+            selectedData.push(scatterData[mainSeries.dataIndex[i]][0]); // Używamy wartości X do histogramu
+        }
+
+        // Oblicz histogram
+        const binCount = 20; // Liczba koszyków
+        const histogram = calculateHistogram(selectedData, binCount);
+
+        // Aktualizacja wykresu histogram
+        selectedChart.setOption({
+            xAxis: {
+                data: histogram.binEdges
+            },
+            series: [{
+                data: histogram.bins
+            }]
+        });
+    });
 </script>
 
 {% endblock %}
