@@ -3,26 +3,34 @@ from django_select2.forms import Select2MultipleWidget, Select2Widget
 
 
 class SelectForm(forms.Form):
-    OPTIONS = [
-        ('option1', 'Option 1'),
-        ('option2', 'Option 2'),
-        ('option3', 'Option 3'),
+    CITY_OPTIONS = [
+        ('Wrocław', 'Wrocław'),
+        ('Ostrów Wlkp.', 'Ostrów Wlkp.'),
+    ]
+    MARKET_OPTIONS = [
+        ('pierwotny', 'pierwotny'),
+        ('wtorny', 'wtorny'),
+    ]
+
+    DATA_TYPE_OPTIONS = [
+        ('Current data', 'Current data'),
+        ('Historical data', 'Historical data'),
     ]
 
     city = forms.MultipleChoiceField(
-        choices=OPTIONS, 
+        choices=CITY_OPTIONS, 
         label='Select city', 
         widget=Select2MultipleWidget(attrs={'id': 'id_city'}),
-        initial=['option1'])
+        initial=['Wrocław'])
     
     market = forms.MultipleChoiceField(
-        choices=OPTIONS, 
+        choices=MARKET_OPTIONS, 
         label='Select market',
         widget=Select2MultipleWidget(attrs={'id': 'id_market'}),
-        initial=['option1'])
+        initial=['pierwotny'])
     
     data_type = forms.MultipleChoiceField(
-        choices=OPTIONS, 
+        choices=DATA_TYPE_OPTIONS, 
         label='Select data type',
         widget=Select2MultipleWidget(attrs={'id': 'id_data_type'}),
-        initial=['option1'])
+        initial=['Current data'])
