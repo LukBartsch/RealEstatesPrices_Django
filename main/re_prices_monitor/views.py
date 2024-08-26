@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from .forms import SelectForm
-from .models import RealEstateOffer
+from .models import RealEstateOffer, HistoricRealEstatePrice
 import json
 
 # Create your views here.
@@ -42,12 +42,27 @@ class HomeView(View):
 
             for city in selected_cities:
                 for market in selected_market:
-                    if selected_data_type[0] == 'Current data':
-                        offers = RealEstateOffer.objects.filter(city_name=city).filter(market_type=market)
-                        combined_offers.append(offers)
-                        
+
+                    if len(selected_data_type) == 1:
+                        if selected_data_type[0] == 'Current data':
+                            offers = RealEstateOffer.objects.filter(city_name=city).filter(market_type=market)
+                            combined_offers.append(offers)
+                            
+                        else:
+                            offers = HistoricRealEstatePrice.objects.filter(city_name=city).filter(market_type=market)
+                            combined_offers.append(offers)
                     else:
-                        pass
+
+                        combined_query = []
+
+                        current_offers = RealEstateOffer.objects.filter(city_name=city).filter(market_type=market).values('date', 'city_name', 'market_type', 'm2_price')
+                        historical_offers = HistoricRealEstatePrice.objects.filter(city_name=city).filter(market_type=market).values('date', 'city_name', 'market_type', 'm2_price')
+                        
+                        combined_query.extend(list(historical_offers))
+                        combined_query.extend(list(current_offers))
+
+                        combined_offers.append(combined_query)
+
 
             chart_data = self.prepare_chart_data(combined_offers)
 
@@ -67,15 +82,26 @@ class HomeView(View):
         dataset_colors = ["black", "orange", "grey", 'rgba(75, 192, 192, 1)']
 
         for num, row in enumerate(combined_offers):
-            
-            if num == 0:
-                labels = [single_row.date for single_row in row]
 
-            datasets.append({
-                'label': row[0].city_name + ' - rynek ' + row[0].market_type + ' [PLN/m2]',
-                'borderColor': dataset_colors[num],#'#417690',
-                'data': [single_row.m2_price for single_row in row]
-            })
+            if type(row[0]) is dict: #histrorical data combined with current data
+                if num == 0:
+                    labels = [single_row['date'] for single_row in row]
+
+                datasets.append({
+                    'label': row[0]['city_name'] + ' - rynek ' + row[0]['market_type'] + ' [PLN/m2]',
+                    'borderColor': dataset_colors[num],#'#417690',
+                    'data': [single_row['m2_price'] for single_row in row]
+                })
+            else:
+            
+                if num == 0:
+                    labels = [single_row.date for single_row in row]
+
+                datasets.append({
+                    'label': row[0].city_name + ' - rynek ' + row[0].market_type + ' [PLN/m2]',
+                    'borderColor': dataset_colors[num],#'#417690',
+                    'data': [single_row.m2_price for single_row in row]
+                })
 
         return {
             'data': {   
