@@ -1,16 +1,9 @@
 from django import forms
 from django_select2.forms import Select2MultipleWidget, Select2Widget
+from .models import RealEstateOffer
 
 
 class SelectForm(forms.Form):
-    CITY_OPTIONS = [
-        ('Wrocław', 'Wrocław'),
-        ('Ostrów Wlkp.', 'Ostrów Wlkp.'),
-    ]
-    MARKET_OPTIONS = [
-        ('pierwotny', 'pierwotny'),
-        ('wtorny', 'wtorny'),
-    ]
 
     DATA_TYPE_OPTIONS = [
         ('Current data', 'Current data'),
@@ -18,13 +11,11 @@ class SelectForm(forms.Form):
     ]
 
     city = forms.MultipleChoiceField(
-        choices=CITY_OPTIONS, 
         label='Select city', 
         widget=Select2MultipleWidget(attrs={'id': 'id_city'}),
         initial=['Wrocław'])
     
     market = forms.MultipleChoiceField(
-        choices=MARKET_OPTIONS, 
         label='Select market',
         widget=Select2MultipleWidget(attrs={'id': 'id_market'}),
         initial=['pierwotny'])
@@ -34,3 +25,17 @@ class SelectForm(forms.Form):
         label='Select data type',
         widget=Select2MultipleWidget(attrs={'id': 'id_data_type'}),
         initial=['Current data'])
+    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['city'].choices = self.get_city_choices()
+        self.fields['market'].choices = self.get_market_choices()
+
+    def get_city_choices(self):
+        cities = RealEstateOffer.objects.values_list('city_name', flat=True).distinct()
+        return [(city, city) for city in cities]
+
+    def get_market_choices(self):
+        markets = RealEstateOffer.objects.values_list('market_type', flat=True).distinct()
+        return [(market, market) for market in markets]
