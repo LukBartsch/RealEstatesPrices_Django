@@ -529,6 +529,24 @@
             symbolSize: 3,
             itemStyle: {
                 opacity: 0.4,
+                color: function (params) {
+                const xValue = params.value[0];
+                const yValue = params.value[1];
+                const inputSections = document.querySelectorAll('.inputSection');
+                for (const section of inputSections) {
+                    const isActive = section.querySelector('.activeSection').checked;
+                    if (!isActive) continue;
+                    const minXValue = parseFloat(section.querySelector('.minXValue').value) || xMin;
+                    const maxXValue = parseFloat(section.querySelector('.maxXValue').value) || xMax;
+                    const minYValue = parseFloat(section.querySelector('.minYValue').value) || yMin;
+                    const maxYValue = parseFloat(section.querySelector('.maxYValue').value) || yMax;
+                    const highlightColor = section.querySelector('.highlightColor').value || '#FFA500';
+                    if (xValue >= minXValue && xValue <= maxXValue && yValue >= minYValue && yValue <= maxYValue) {
+                        return highlightColor;
+                    }
+                }
+                return 'blue';
+            }
 
             },
             blendMode: 'source-over',
@@ -551,6 +569,8 @@
                         const yValue = params.value[1];
                         const inputSections = document.querySelectorAll('.inputSection');
                         for (const section of inputSections) {
+                            const isActive = section.querySelector('.activeSection').checked;
+                            if (!isActive) continue;
                             const minXValue = parseFloat(section.querySelector('.minXValue').value) || xMin;
                             const maxXValue = parseFloat(section.querySelector('.maxXValue').value) || xMax;
                             const minYValue = parseFloat(section.querySelector('.minYValue').value) || yMin;
@@ -589,6 +609,10 @@
         <div>
             <label for="highlightColor">Highlight Color:</label>
             <input type="color" class="highlightColor" value="#FFA500" oninput="updateHighlight()">
+        </div>
+        <div>
+            <label for="activeSection">Active:</label>
+            <input type="checkbox" class="activeSection" checked oninput="updateHighlight()">
         </div>
         <button onclick="removeInputSection(this)">Remove Section</button>
     `;
