@@ -38,8 +38,22 @@
 
 
     <section class="Section-Box">
+        <div>
+            <label for="minXValue">Min X Value:</label>
+            <input type="number" id="minXValue" name="minXValue" oninput="updateHighlight()">
+            <label for="maxXValue">Max X Value:</label>
+            <input type="number" id="maxXValue" name="maxXValue" oninput="updateHighlight()">
+        </div>
+        <div>
+            <label for="minYValue">Min Y Value:</label>
+            <input type="number" id="minYValue" name="minYValue" oninput="updateHighlight()">
+            <label for="maxYValue">Max Y Value:</label>
+            <input type="number" id="maxYValue" name="maxYValue" oninput="updateHighlight()">
+        </div>
+
+
         <div id="scatterPlot" style="width: 100%; height: 100vh;"></div>
-        <div id="selectedHistogram" style="width: 100%; height: 50vh;"></div>
+        <!-- <div id="selectedHistogram" style="width: 100%; height: 50vh;"></div> -->
     </section>
 
 
@@ -78,7 +92,7 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 
     const data = JSON.parse('{{ chart_data|safe|escapejs }}');
@@ -92,7 +106,7 @@
     });
 
 
-</script>
+</script> -->
 
 
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
@@ -281,7 +295,7 @@
 
 
 
-<script>
+<!-- <script>
     // Funkcja do generowania losowych danych dla wykresu scatter
     function generateScatterData(numPoints, startIndex = 0) {
         const data = [];
@@ -451,6 +465,117 @@
             }]
         });
     });
+</script> -->
+
+
+
+<script>
+    // Funkcja do generowania losowych danych dla wykresu scatter
+    function generateScatterData(numPoints) {
+        const data = [];
+        for (let i = 0; i < numPoints; i++) {
+            const x_value = Math.random() * 100;
+            const y_value = Math.random() < 0.5 ? Math.random() * 30 : 70 + Math.random() * 30;
+            data.push([x_value, y_value]);
+        }
+        return data;
+    }
+
+    // Generowanie danych dla wykresu scatter
+    const numPoints = 100000; // Przykładowa liczba punktów
+    const scatterData = generateScatterData(numPoints);
+
+
+    // Ustalanie domyślnych wartości dla osi X i Y
+    const xMin = Math.min(...scatterData.map(d => d[0]));
+    const xMax = Math.max(...scatterData.map(d => d[0]));
+    const yMin = Math.min(...scatterData.map(d => d[1]));
+    const yMax = Math.max(...scatterData.map(d => d[1]));
+
+    // Inicjalizacja wykresu scatter
+    const chartDom = document.getElementById('scatterPlot');
+    const myChart = echarts.init(chartDom);
+    const option = {
+        title: {
+            text: 'Scatter Plot with Range Highlight'
+        },
+        tooltip: {},
+        toolbox: {
+            right: 20,
+            feature: {
+                dataZoom: {}
+            }
+        },
+        xAxis: [{}],
+        yAxis: [{}],
+        dataZoom: [
+        {
+            type: 'inside'
+        },
+        {
+            type: 'slider',
+            showDataShadow: false,
+            handleIcon:
+            'path://M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '80%'
+        },
+        {
+            type: 'inside',
+            orient: 'vertical'
+        },
+        {
+            type: 'slider',
+            orient: 'vertical',
+            showDataShadow: false,
+            handleIcon:
+            'path://M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '80%'
+        }
+        ],
+        animation: false,
+        series: [
+        {
+            type: 'scatter',
+            data: scatterData,
+            symbolSize: 3,
+            itemStyle: {
+            opacity: 0.4
+            },
+            blendMode: 'source-over',
+            //large: true,
+            largeThreshold: 500
+        }
+        ]
+    };
+
+    // Renderowanie wykresu scatter
+    myChart.setOption(option);
+
+    // Funkcja do aktualizacji koloru punktów na wykresie
+    function updateHighlight() {
+        const minXValue = parseFloat(document.getElementById('minXValue').value) || xMin;
+        const maxXValue = parseFloat(document.getElementById('maxXValue').value) || xMax;
+        const minYValue = parseFloat(document.getElementById('minYValue').value) || yMin;
+        const maxYValue = parseFloat(document.getElementById('maxYValue').value) || yMax;
+
+        myChart.setOption({
+            series: [{
+                itemStyle: {
+                    color: function (params) {
+                        const xValue = params.value[0];
+                        const yValue = params.value[1];
+                        if (xValue >= minXValue && xValue <= maxXValue && yValue >= minYValue && yValue <= maxYValue) {
+                            return 'orange';
+                        }
+                        return 'blue';
+                    }
+                }
+            }]
+        });
+}
+
+
+
 </script>
 
 {% endblock %}
