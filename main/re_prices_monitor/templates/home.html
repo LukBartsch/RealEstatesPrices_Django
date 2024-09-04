@@ -475,7 +475,15 @@
     const scatterData = generateScatterData(numPoints);
 
 
-    createChart(scatterData);
+    
+
+    // funkcja fetch do pobrania danych z widoku django: "get-data"
+    fetch('/get-data')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            createChart(data);
+        });
 
 
 
@@ -483,10 +491,16 @@
 
 
         // Ustalanie domyślnych wartości dla osi X i Y
-        const xMin = Math.min(...scatterData.map(d => d[0]));
-        const xMax = Math.max(...scatterData.map(d => d[0]));
-        const yMin = Math.min(...scatterData.map(d => d[1]));
-        const yMax = Math.max(...scatterData.map(d => d[1]));
+        //const xMin = Math.min(...scatterData.map(d => d[0]));
+        //const xMax = Math.max(...scatterData.map(d => d[0]));
+        //const yMin = Math.min(...scatterData.map(d => d[1]));
+        //const yMax = Math.max(...scatterData.map(d => d[1]));
+
+
+        const xMin = 0;
+        const xMax = 100;
+        const yMin = 0;
+        const yMax = 100;
 
         // Inicjalizacja wykresu scatter
         const chartDom = document.getElementById('scatterPlot');
