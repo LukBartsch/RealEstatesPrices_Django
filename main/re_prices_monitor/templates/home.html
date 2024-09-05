@@ -633,8 +633,23 @@
 
 
     function addExtraAxis() {
+        const maxValue = document.querySelector('.maxValue').value;
+        const minValue = document.querySelector('.minValue').value;
+        fetch(`/extra-axis/?maxValue=${maxValue}&minValue=${minValue}`)
+            .then(response => response.json())
+            .then(data => {
+
+                scatterData2 = data.data2;
+
+                addExtraSeries();
+
+            });
+        }
+
+    function addExtraSeries() {
 
 
+        const highlightColor2 = document.querySelector('.highlightColor2').value || '#FFA500';
         
 
         myChart.setOption({
@@ -657,7 +672,7 @@
                 symbolSize: 3,
                 itemStyle: {
                     opacity: 0.7,
-                    color: 'red'
+                    color: highlightColor2
                 },
                 blendMode: 'source-over',
                 large: true,
@@ -711,10 +726,10 @@
         newSection.className = 'inputExtraAxisSections';
         newSection.innerHTML = `
             <div>
-                <label for="#">Min Value:</label>
-                <input type="number" class="minXValue" oninput="addExtraAxis()">
-                <label for="#">Max Value:</label>
-                <input type="number" class="maxXValue" oninput="addExtraAxis()">
+                <label for="minValue">Min Value:</label>
+                <input type="number" class="minValue" oninput="addExtraAxis()">
+                <label for="maxValue">Max Value:</label>
+                <input type="number" class="maxValue" oninput="addExtraAxis()">
             </div>
 
             <div>

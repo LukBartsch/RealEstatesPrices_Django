@@ -143,3 +143,41 @@ class GetDataView(View):
         return JsonResponse(result, safe=False)
     
 
+
+class ExtraAxisView(View):
+    def get(self, request):
+        max_value = request.GET.get('maxValue')
+        min_value = request.GET.get('minValue')
+
+        print(max_value, min_value)
+
+        if max_value is None or max_value == '':
+            max_value = 90
+        else:
+            max_value = int(max_value)
+
+        if min_value is None or min_value == '':
+            min_value = 10
+        else:
+            min_value = int(min_value)
+
+        points2 = 20000
+
+        print(max_value, min_value)
+        
+
+        x_value2 = [random.uniform(0, 100) for _ in range(points2)]
+
+        y_value2 = [random.uniform(0, min_value) if random.random() < 0.5 else random.uniform(max_value, 100) for _ in range(points2)]
+
+
+        combined_values2 = [[x, y] for x, y in zip(x_value2, y_value2)]
+
+        result = {
+            'data2': combined_values2
+        }
+
+        #save result like
+        return JsonResponse(result, safe=False)
+    
+
