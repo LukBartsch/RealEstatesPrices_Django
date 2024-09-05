@@ -39,7 +39,10 @@
 
     <section class="Section-Box">
         <div id="inputSections"></div>  
-        <button onclick="addInputSection()">Add Select Section</button>
+        <button onclick="addInputSection()" style="margin-bottom: 30px;">Add Select Section</button>
+
+        <div id="inputExtraAxisSections"></div>  
+        <button onclick="addExtraAxisSection()" style="margin-bottom: 30px;">Add Extra Axis</button>
 
         <div id="scatterPlot" style="width: 100%; height: 100vh;"></div>
         <!-- <div id="selectedHistogram" style="width: 100%; height: 50vh;"></div> -->
@@ -469,10 +472,24 @@
         }
         return data;
     }
+    
 
     // Generowanie danych dla wykresu scatter
     const numPoints = 100000; // Przykładowa liczba punktów
-    const scatterData = generateScatterData(numPoints);
+    //var scatterData = generateScatterData(numPoints);
+    var scatterData; 
+    var scatterData2; 
+
+
+    // Inicjalizacja wykresu scatter
+    var chartDom = document.getElementById('scatterPlot');
+    var myChart = echarts.init(chartDom);
+
+
+    var xMin = 0;
+    var xMax = 100;
+    var yMin = 0;
+    var yMax = 100;
 
 
     
@@ -481,8 +498,11 @@
     fetch('/get-data')
         .then(response => response.json())
         .then(data => {
-            console.log(data);
-            createChart(data);
+
+            scatterData = data.data1;
+            scatterData2 = data.data2;
+            //console.log(data);
+            createChart(scatterData);
         });
 
 
@@ -497,14 +517,9 @@
         //const yMax = Math.max(...scatterData.map(d => d[1]));
 
 
-        const xMin = 0;
-        const xMax = 100;
-        const yMin = 0;
-        const yMax = 100;
 
-        // Inicjalizacja wykresu scatter
-        const chartDom = document.getElementById('scatterPlot');
-        const myChart = echarts.init(chartDom);
+
+
         const option = {
             title: {
                 text: 'Scatter Plot with Range Highlight'
@@ -550,24 +565,24 @@
                 symbolSize: 3,
                 itemStyle: {
                     opacity: 0.4,
-                    color: function (params) {
-                    const xValue = params.value[0];
-                    const yValue = params.value[1];
-                    const inputSections = document.querySelectorAll('.inputSection');
-                    for (const section of inputSections) {
-                        const isActive = section.querySelector('.activeSection').checked;
-                        if (!isActive) continue;
-                        const minXValue = parseFloat(section.querySelector('.minXValue').value) || xMin;
-                        const maxXValue = parseFloat(section.querySelector('.maxXValue').value) || xMax;
-                        const minYValue = parseFloat(section.querySelector('.minYValue').value) || yMin;
-                        const maxYValue = parseFloat(section.querySelector('.maxYValue').value) || yMax;
-                        const highlightColor = section.querySelector('.highlightColor').value || '#FFA500';
-                        if (xValue >= minXValue && xValue <= maxXValue && yValue >= minYValue && yValue <= maxYValue) {
-                            return highlightColor;
-                        }
-                    }
-                    return 'blue';
-                }
+                //     color: function (params) {
+                //     const xValue = params.value[0];
+                //     const yValue = params.value[1];
+                //     const inputSections = document.querySelectorAll('.inputSection');
+                //     for (const section of inputSections) {
+                //         const isActive = section.querySelector('.activeSection').checked;
+                //         if (!isActive) continue;
+                //         const minXValue = parseFloat(section.querySelector('.minXValue').value) || xMin;
+                //         const maxXValue = parseFloat(section.querySelector('.maxXValue').value) || xMax;
+                //         const minYValue = parseFloat(section.querySelector('.minYValue').value) || yMin;
+                //         const maxYValue = parseFloat(section.querySelector('.maxYValue').value) || yMax;
+                //         const highlightColor = section.querySelector('.highlightColor').value || '#FFA500';
+                //         if (xValue >= minXValue && xValue <= maxXValue && yValue >= minYValue && yValue <= maxYValue) {
+                //             return highlightColor;
+                //         }
+                //     }
+                //     return 'blue';
+                // }
 
                 },
                 blendMode: 'source-over',
@@ -588,6 +603,7 @@
 
     // Funkcja do aktualizacji koloru punktów na wykresie
     function updateHighlight() {
+
         myChart.setOption({
             series: [{
                 itemStyle: {
@@ -615,36 +631,107 @@
     }
 
 
+
+    function addExtraAxis() {
+
+
+        
+
+        myChart.setOption({
+            series: [
+            {
+                type: 'scatter',
+                data: scatterData,
+                symbolSize: 3,
+                itemStyle: {
+                    opacity: 0.4,
+                },
+                blendMode: 'source-over',
+                //large: true,
+                largeThreshold: 500,
+                zlevel: 0
+            },
+            {
+                type: 'scatter',
+                data: scatterData2,
+                symbolSize: 3,
+                itemStyle: {
+                    opacity: 0.7,
+                    color: 'red'
+                },
+                blendMode: 'source-over',
+                large: true,
+                largeThreshold: 500,
+                zlevel: 1
+            }
+            ]
+        });
+        
+
+    }
+
+
     // Funkcja do dodawania nowej sekcji input
     function addInputSection() {
-    const inputSections = document.getElementById('inputSections');
-    const newSection = document.createElement('div');
-    newSection.className = 'inputSection';
-    newSection.innerHTML = `
-        <div>
-            <label for="minXValue">Min X Value:</label>
-            <input type="number" class="minXValue" oninput="updateHighlight()">
-            <label for="maxXValue">Max X Value:</label>
-            <input type="number" class="maxXValue" oninput="updateHighlight()">
-        </div>
-        <div>
-            <label for="minYValue">Min Y Value:</label>
-            <input type="number" class="minYValue" oninput="updateHighlight()">
-            <label for="maxYValue">Max Y Value:</label>
-            <input type="number" class="maxYValue" oninput="updateHighlight()">
-        </div>
-        <div>
-            <label for="highlightColor">Highlight Color:</label>
-            <input type="color" class="highlightColor" value="#FFA500" oninput="updateHighlight()">
-        </div>
-        <div>
-            <label for="activeSection">Active:</label>
-            <input type="checkbox" class="activeSection" checked oninput="updateHighlight()">
-        </div>
-        <button onclick="removeInputSection(this)">Remove Section</button>
-    `;
-    inputSections.appendChild(newSection);
-}
+        const inputSections = document.getElementById('inputSections');
+        const newSection = document.createElement('div');
+        newSection.className = 'inputSection';
+        newSection.innerHTML = `
+            <div>
+                <label for="minXValue">Min X Value:</label>
+                <input type="number" class="minXValue" oninput="updateHighlight()">
+                <label for="maxXValue">Max X Value:</label>
+                <input type="number" class="maxXValue" oninput="updateHighlight()">
+            </div>
+            <div>
+                <label for="minYValue">Min Y Value:</label>
+                <input type="number" class="minYValue" oninput="updateHighlight()">
+                <label for="maxYValue">Max Y Value:</label>
+                <input type="number" class="maxYValue" oninput="updateHighlight()">
+            </div>
+            <div>
+                <label for="highlightColor">Highlight Color:</label>
+                <input type="color" class="highlightColor" value="#FFA500" oninput="updateHighlight()">
+            </div>
+            <div>
+                <label for="activeSection">Active:</label>
+                <input type="checkbox" class="activeSection" checked oninput="updateHighlight()">
+            </div>
+            <button onclick="removeInputSection(this)" style="background-color: #FFCCCB;">Remove Section</button>
+        `;
+        inputSections.appendChild(newSection);
+    }
+
+
+
+    // Funkcja do dodawania nowej osi
+    function addExtraAxisSection() {
+        const inputSections = document.getElementById('inputExtraAxisSections');
+        const newSection = document.createElement('div');
+        newSection.className = 'inputExtraAxisSections';
+        newSection.innerHTML = `
+            <div>
+                <label for="#">Min Value:</label>
+                <input type="number" class="minXValue" oninput="addExtraAxis()">
+                <label for="#">Max Value:</label>
+                <input type="number" class="maxXValue" oninput="addExtraAxis()">
+            </div>
+
+            <div>
+                <label for="highlightColor2">Highlight Color:</label>
+                <input type="color" class="highlightColor2" value="#FFA500" oninput="addExtraAxis()">
+            </div>
+            <div>
+                <label for="activeSection">Active:</label>
+                <input type="checkbox" class="activeSection" checked oninput="addExtraAxis()">
+            </div>
+            <button onclick="removeExtraAxisSection(this)" style="background-color: #FFCCCB;">Remove Axis</button>
+        `;
+        inputSections.appendChild(newSection);
+
+        // Dodaj nową serię danych do wykresu
+        addExtraAxis();
+    }
 
 
 // Funkcja do usuwania sekcji input
@@ -654,6 +741,17 @@ function removeInputSection(button) {
     updateHighlight();
 }
 
+
+function removeExtraAxisSection(button) {
+    const section = button.parentElement;
+    section.remove();
+
+    myChart.dispose();
+    myChart = echarts.init(chartDom);
+
+    createChart(scatterData);
+
+}
 
 
 </script>

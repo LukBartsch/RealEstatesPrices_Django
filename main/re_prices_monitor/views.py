@@ -116,18 +116,30 @@ class HomeView(View):
 class GetDataView(View):
     def get(self, request):
 
-        points = 1000000
+        points = 200000
+        points2 = 20000
         
         # Wygeneruj listę x_value zawierającą 1000 losowych wartości z zakresu od 0 do 100
         x_value = [random.uniform(0, 100) for _ in range(points)]
 
+        x_value2 = [random.uniform(0, 100) for _ in range(points2)]
+
         # Wygeneruj listę y_value zawierającą 1000 losowych wartości z zakresu od 0 do 30 oraz od 70 do 100
         y_value = [random.uniform(0, 30) if random.random() < 0.5 else random.uniform(70, 100) for _ in range(points)]
+
+        y_value2 = [random.uniform(0, 10) if random.random() < 0.5 else random.uniform(90, 100) for _ in range(points2)]
 
         # Połącz listy x_value i y_value w jedną listę par [x, y]
         combined_values = [[x, y] for x, y in zip(x_value, y_value)]
 
+        combined_values2 = [[x, y] for x, y in zip(x_value2, y_value2)]
+
+        result = {
+            'data1': combined_values,
+            'data2': combined_values2
+        }
+
         #save result like
-        return JsonResponse(combined_values, safe=False)
+        return JsonResponse(result, safe=False)
     
 
