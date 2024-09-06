@@ -481,6 +481,11 @@
     var scatterData2; 
 
 
+    var seriesArray = [];
+
+    var legendArray = [];
+
+
     // Inicjalizacja wykresu scatter
     var chartDom = document.getElementById('scatterPlot');
     var myChart = echarts.init(chartDom);
@@ -501,6 +506,24 @@
 
             scatterData = data.data1;
             scatterData2 = data.data2;
+
+
+            seriesArray.push({
+                name: 'Oryginal',
+                type: 'scatter',
+                data: scatterData,
+                symbolSize: 3,
+                itemStyle: {
+                    opacity: 0.4,
+                },
+                blendMode: 'source-over',
+                //large: true,
+                largeThreshold: 500
+            });
+
+            legendArray.push('Oryginal')
+
+
             //console.log(data);
             createChart(scatterData);
         });
@@ -633,53 +656,124 @@
 
 
     function addExtraAxis() {
-        const maxValue = document.querySelector('.maxValue').value;
-        const minValue = document.querySelector('.minValue').value;
-        fetch(`/extra-axis/?maxValue=${maxValue}&minValue=${minValue}`)
-            .then(response => response.json())
-            .then(data => {
 
-                scatterData2 = data.data2;
 
-                addExtraSeries();
 
-            });
+        const sections = document.querySelectorAll('.inputExtraAxisSections');
+
+        seriesArray = [];
+
+        sections.forEach((section, index) => {
+            const minValue = section.querySelector('.minValue').value;
+            const maxValue = section.querySelector('.maxValue').value;
+            const highlightColor2 = section.querySelector('.highlightColor2').value || '#FFA500';
+
+            // Fetch data for each section
+            fetch(`/extra-axis/?minValue=${minValue}&maxValue=${maxValue}`)
+                .then(response => response.json())
+                .then(data => {
+
+
+     
+                    
+                    // Add new data series to the array
+
+                    scatterData2 = data.data2;
+
+
+                    seriesArray.push({
+                        name: `Series ${index + 1}`,
+                        type: 'scatter',
+                        data: scatterData2,
+                        symbolSize: 3,
+                        itemStyle: {
+                            opacity: 0.7,
+                            color: highlightColor2
+                        },
+                        blendMode: 'source-over',
+                        large: true,
+                        largeThreshold: 500
+                    });
+
+                    legendArray.push(`Series ${index + 1}`)
+
+                    addExtraSeries();
+
+
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        
+
+
+
+        // const maxValue = document.querySelector('.maxValue').value;
+        // const minValue = document.querySelector('.minValue').value;
+        // const highlightColor2 = document.querySelector('.highlightColor2').value || '#FFA500';
+
+        // seriesArray = [];
+        // seriesArray.push({
+        //         name: 'Oryginal',
+        //         type: 'scatter',
+        //         data: scatterData,
+        //         symbolSize: 3,
+        //         itemStyle: {
+        //             opacity: 0.4,
+        //         },
+        //         blendMode: 'source-over',
+        //         //large: true,
+        //         largeThreshold: 500
+        //     });
+
+        // legendArray.push('Oryginal')
+
+        
+
+        // fetch(`/extra-axis/?maxValue=${maxValue}&minValue=${minValue}`)
+        //     .then(response => response.json())
+        //     .then(data => {
+
+        //         scatterData2 = data.data2;
+
+        //         seriesArray.push({
+        //             name: 'Series 2',
+        //             type: 'scatter',
+        //             data: scatterData2,
+        //             symbolSize: 3,
+        //             itemStyle: {
+        //                 opacity: 0.7,
+        //                 color: highlightColor2
+        //             },
+        //             blendMode: 'source-over',
+        //             large: true,
+        //             largeThreshold: 500
+        //         });
+
+        //         legendArray.push('Series 2')
+
+        //         addExtraSeries();
+
+        //     });
         }
+
+
+
+
 
     function addExtraSeries() {
 
 
-        const highlightColor2 = document.querySelector('.highlightColor2').value || '#FFA500';
-        
 
         myChart.setOption({
-            series: [
-            {
-                type: 'scatter',
-                data: scatterData,
-                symbolSize: 3,
-                itemStyle: {
-                    opacity: 0.4,
-                },
-                blendMode: 'source-over',
-                //large: true,
-                largeThreshold: 500,
-                zlevel: 0
+            
+            legend: {
+                data: legendArray,
+                textStyle: {
+                    color: '#000' // Customize the legend text color if needed
+                }
             },
-            {
-                type: 'scatter',
-                data: scatterData2,
-                symbolSize: 3,
-                itemStyle: {
-                    opacity: 0.7,
-                    color: highlightColor2
-                },
-                blendMode: 'source-over',
-                large: true,
-                largeThreshold: 500,
-                zlevel: 1
-            }
-            ]
+            series: seriesArray
         });
         
 
@@ -727,9 +821,9 @@
         newSection.innerHTML = `
             <div>
                 <label for="minValue">Min Value:</label>
-                <input type="number" class="minValue" oninput="addExtraAxis()">
+                <input type="number" class="minValue" onblur="addExtraAxis()">
                 <label for="maxValue">Max Value:</label>
-                <input type="number" class="maxValue" oninput="addExtraAxis()">
+                <input type="number" class="maxValue" onblur="addExtraAxis()">
             </div>
 
             <div>
@@ -737,8 +831,8 @@
                 <input type="color" class="highlightColor2" value="#FFA500" oninput="addExtraAxis()">
             </div>
             <div>
-                <label for="activeSection">Active:</label>
-                <input type="checkbox" class="activeSection" checked oninput="addExtraAxis()">
+                <label for="activeSection2">Active:</label>
+                <input type="checkbox" class="activeSection2" checked oninput="addExtraAxis()">
             </div>
             <button onclick="removeExtraAxisSection(this)" style="background-color: #FFCCCB;">Remove Axis</button>
         `;

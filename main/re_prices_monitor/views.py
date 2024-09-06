@@ -149,7 +149,6 @@ class ExtraAxisView(View):
         max_value = request.GET.get('maxValue')
         min_value = request.GET.get('minValue')
 
-        print(max_value, min_value)
 
         if max_value is None or max_value == '':
             max_value = 90
@@ -162,9 +161,7 @@ class ExtraAxisView(View):
             min_value = int(min_value)
 
         points2 = 20000
-
-        print(max_value, min_value)
-        
+    
 
         x_value2 = [random.uniform(0, 100) for _ in range(points2)]
 
