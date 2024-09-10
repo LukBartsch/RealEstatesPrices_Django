@@ -104,6 +104,8 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2.0.8/dist/echarts-gl.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/pako/1.0.3/pako.min.js"></script>
+
 
 
 
@@ -502,7 +504,25 @@
     // funkcja fetch do pobrania danych z widoku django: "get-data"
     fetch('/get-data')
         .then(response => response.json())
-        .then(data => {
+        .then(result => {
+
+
+            // Decode the base64 encoded string
+            const compressedData = result.data;
+            const binaryString = atob(compressedData);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+
+            // Decompress the data
+            const decompressedData = new TextDecoder('utf-8').decode(pako.inflate(bytes));
+            const data = JSON.parse(decompressedData);
+
+            if (!data.data1 || !data.data2) {
+                throw new Error('Invalid data format');
+            }
 
             scatterData = data.data1;
             scatterData2 = data.data2;
@@ -662,6 +682,22 @@
         const sections = document.querySelectorAll('.inputExtraAxisSections');
 
         seriesArray = [];
+        legendArray = [];
+
+        seriesArray.push({
+                name: 'Oryginal',
+                type: 'scatter',
+                data: scatterData,
+                symbolSize: 3,
+                itemStyle: {
+                    opacity: 0.4,
+                },
+                blendMode: 'source-over',
+                //large: true,
+                largeThreshold: 500
+            });
+
+        legendArray.push('Oryginal')
 
         sections.forEach((section, index) => {
             const minValue = section.querySelector('.minValue').value;
@@ -855,10 +891,16 @@ function removeExtraAxisSection(button) {
     const section = button.parentElement;
     section.remove();
 
-    myChart.dispose();
-    myChart = echarts.init(chartDom);
+    // myChart.dispose();
+    // myChart = echarts.init(chartDom);
 
-    createChart(scatterData);
+    // createChart(scatterData);
+
+    myChart.setOption({series: []}, {replaceMerge: ['series']});
+
+    addExtraAxis();
+
+    updateHighlight();
 
 }
 

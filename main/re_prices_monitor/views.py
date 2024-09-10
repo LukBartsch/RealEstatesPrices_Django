@@ -5,7 +5,8 @@ from .forms import SelectForm
 from .models import RealEstateOffer, HistoricRealEstatePrice
 import json
 import random
-
+import gzip
+import base64
 # Create your views here.
 
 
@@ -134,13 +135,22 @@ class GetDataView(View):
 
         combined_values2 = [[x, y] for x, y in zip(x_value2, y_value2)]
 
+        
         result = {
             'data1': combined_values,
             'data2': combined_values2
         }
 
+        # Compress the JSON data
+        compressed_data = gzip.compress(json.dumps(result).encode('utf-8'))
+
+        # Encode the compressed data to base64
+        encoded_data = base64.b64encode(compressed_data).decode('utf-8')
+
+
         #save result like
-        return JsonResponse(result, safe=False)
+        #return JsonResponse(result, safe=False)
+        return JsonResponse({'data': encoded_data})
     
 
 
