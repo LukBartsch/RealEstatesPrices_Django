@@ -7,6 +7,10 @@ import json
 import random
 import gzip
 import base64
+import time
+
+import pandas as pd
+import numpy as np
 # Create your views here.
 
 
@@ -119,38 +123,106 @@ class GetDataView(View):
 
         points = 200000
         points2 = 20000
+
+        start_time = time.time()
         
+
+        start1 = time.time()
         # Wygeneruj listę x_value zawierającą 1000 losowych wartości z zakresu od 0 do 100
         x_value = [random.uniform(0, 100) for _ in range(points)]
 
         x_value2 = [random.uniform(0, 100) for _ in range(points2)]
 
+        
+
         # Wygeneruj listę y_value zawierającą 1000 losowych wartości z zakresu od 0 do 30 oraz od 70 do 100
         y_value = [random.uniform(0, 30) if random.random() < 0.5 else random.uniform(70, 100) for _ in range(points)]
 
         y_value2 = [random.uniform(0, 10) if random.random() < 0.5 else random.uniform(90, 100) for _ in range(points2)]
+        end1 = time.time()
 
+
+        start2 = time.time()
         # Połącz listy x_value i y_value w jedną listę par [x, y]
         combined_values = [[x, y] for x, y in zip(x_value, y_value)]
 
         combined_values2 = [[x, y] for x, y in zip(x_value2, y_value2)]
 
+        end2 = time.time()
+
+        
         
         result = {
             'data1': combined_values,
             'data2': combined_values2
         }
 
-        # Compress the JSON data
-        compressed_data = gzip.compress(json.dumps(result).encode('utf-8'))
+        # # Compress the JSON data
+        # compressed_data = gzip.compress(json.dumps(result).encode('utf-8'))
 
-        # Encode the compressed data to base64
-        encoded_data = base64.b64encode(compressed_data).decode('utf-8')
+        # # Encode the compressed data to base64
+        # encoded_data = base64.b64encode(compressed_data).decode('utf-8')
+
+        
+        points = 300000
+
+        start3 = time.time()
+        # Wygeneruj kolumnę x zawierającą losowe wartości z zakresu od 0 do 100
+        x_values = np.random.uniform(0, 100, points)
+
+        # Wygeneruj kolumnę y1 zawierającą losowe wartości z zakresu od 0 do 30 oraz od 70 do 100
+        y_values = np.where(np.random.rand(points) < 0.5, np.random.uniform(0, 30, points), np.random.uniform(70, 100, points))
+
+        # Tworzenie DataFrame
+        df = pd.DataFrame({'x': x_values, 'y1': y_values})
+
+        data1_list = df.values.tolist()
 
 
+
+        # Wygeneruj kolumnę x2 zawierającą losowe wartości z zakresu od 0 do 100
+        x_values2 = np.random.uniform(0, 100, points2)
+
+        # Wygeneruj kolumnę y2 zawierającą losowe wartości z zakresu od 0 do 10 oraz od 90 do 100
+        y_values2 = np.where(np.random.rand(points2) < 0.5, np.random.uniform(0, 10, points2), np.random.uniform(90, 100, points2))
+
+        # Tworzenie DataFrame dla drugiego zestawu danych
+        df2 = pd.DataFrame({'x': x_values2, 'y2': y_values2})
+
+        data2_list = df2.values.tolist()
+
+
+        # Konwersja DataFrame do JSON
+        #data1_json = df.to_json(orient='records')
+        #data2_json = df2.to_json(orient='records')
+
+
+        #print('data2_json: ', data2_list[:5])
+
+    
+        end3 = time.time()
+
+
+        start4 = time.time()
+        result = {
+            'data1': data1_list,
+            'data2': data2_list
+        }
+        end4 = time.time()
+
+
+        result1 = end1 - start1
+        result2 = end2 - start2
+        result3 = end3 - start3
+        result4 = end4 - start4
+
+        print('result1: ', result1)
+        print('result2: ', result2)
+        print('result3: ', result3)
+        print('result4: ', result4)
         #save result like
-        #return JsonResponse(result, safe=False)
-        return JsonResponse({'data': encoded_data})
+        return JsonResponse(result, safe=False)
+        #return JsonResponse({'data': encoded_data})
     
 
 

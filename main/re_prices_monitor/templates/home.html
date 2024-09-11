@@ -504,25 +504,25 @@
     // funkcja fetch do pobrania danych z widoku django: "get-data"
     fetch('/get-data')
         .then(response => response.json())
-        .then(result => {
+        .then(data => {
 
 
-            // Decode the base64 encoded string
-            const compressedData = result.data;
-            const binaryString = atob(compressedData);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
+            // // Decode the base64 encoded string
+            // const compressedData = result.data;
+            // const binaryString = atob(compressedData);
+            // const len = binaryString.length;
+            // const bytes = new Uint8Array(len);
+            // for (let i = 0; i < len; i++) {
+            //     bytes[i] = binaryString.charCodeAt(i);
+            // }
 
-            // Decompress the data
-            const decompressedData = new TextDecoder('utf-8').decode(pako.inflate(bytes));
-            const data = JSON.parse(decompressedData);
+            // // Decompress the data
+            // const decompressedData = new TextDecoder('utf-8').decode(pako.inflate(bytes));
+            // const data = JSON.parse(decompressedData);
 
-            if (!data.data1 || !data.data2) {
-                throw new Error('Invalid data format');
-            }
+            // if (!data.data1 || !data.data2) {
+            //     throw new Error('Invalid data format');
+            // }
 
             scatterData = data.data1;
             scatterData2 = data.data2;
