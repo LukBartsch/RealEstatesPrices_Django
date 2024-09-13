@@ -50,3 +50,13 @@ footer {
     color: grey;
     padding: 1vmin;
 }
+
+
+.today-line {
+    position: absolute;
+    width: 2px;
+    background-color: red;
+    top: 0;
+    bottom: 0;
+    z-index: 10;
+}

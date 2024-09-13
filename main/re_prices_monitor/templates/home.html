@@ -30,6 +30,12 @@
         </form>
     </section>
 
+
+    <section style="margin-bottom: 100px;"></section>
+        <div id="chart_div"></div>
+        <div id="today-line" class="today-line"></div>
+    </section>
+
     
     <section class="Section-Box">
         <h4>Average Prices Trend</h4>
@@ -82,6 +88,9 @@
     </section>
 
 
+    
+
+
 </div>
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -105,6 +114,10 @@
 <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2.0.8/dist/echarts-gl.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/pako/1.0.3/pako.min.js"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
 
 
 
@@ -906,6 +919,86 @@ function removeExtraAxisSection(button) {
 
 
 </script>
+
+
+
+<script type="text/javascript">
+    google.charts.load('current', {'packages':['gantt']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Task ID');
+      data.addColumn('string', 'Task Name');
+      data.addColumn('string', 'Resource');
+      data.addColumn('date', 'Start Date');
+      data.addColumn('date', 'End Date');
+      data.addColumn('number', 'Duration');
+      data.addColumn('number', 'Percent Complete');
+      data.addColumn('string', 'Dependencies');
+
+
+    var rows = [
+        // Project 1
+        ['P1T1', 'Project 1 Task 1', 'Project 1', new Date(2023, 0, 1), new Date(2023, 0, 5), null, 100, null],
+        ['P1T2', 'Project 1 Task 2', 'Project 1', new Date(2023, 0, 2), new Date(2023, 0, 10), null, 50, 'P1T1'],
+        ['P1T3', 'Project 1 Task 3', 'Project 1', new Date(2023, 0, 11), new Date(2023, 0, 15), null, 0, 'P1T2'],
+
+        // Project 2
+        ['P2T1', 'Project 2 Task 1', 'Project 2', new Date(2023, 0, 1), new Date(2023, 0, 3), null, 100, null],
+        ['P2T2', 'Project 2 Task 2', 'Project 2', new Date(2023, 0, 4), new Date(2023, 0, 8), null, 75, 'P2T1'],
+        ['P2T3', 'Project 2 Task 3', 'Project 2', new Date(2023, 0, 9), new Date(2023, 0, 12), null, 25, 'P2T2'],
+
+        // Project 3
+        ['P3T1', 'Project 3 Task 1', 'Project 3', new Date(2023, 0, 1), new Date(2023, 0, 3), null, 100, null],
+        ['P3T2', 'Project 3 Task 2', 'Project 3', new Date(2023, 0, 1), new Date(2023, 0, 8), null, 75, 'P3T1'],
+        ['P3T3', 'Project 3 Task 3', 'Project 3', new Date(2023, 0, 9), new Date(2023, 0, 12), null, 25, 'P3T2']
+    ];
+
+    // Sortowanie danych według kolumny projektu (kolumna 2)
+    // rows.sort(function(a, b) {
+    //     if (a[2] < b[2]) return -1;
+    //     if (a[2] > b[2]) return 1;
+    //     return 0;
+    // });
+
+    data.addRows(rows);
+
+      var options = {
+        height: 400,
+        gantt: {
+          trackHeight: 30,
+          criticalPathEnabled: true, // Critical path arrows will be the same as other arrows.
+            arrow: {
+                angle: 0,
+                width: 0,
+                color: 'none',
+                radius: 0
+            }
+        }
+      };
+
+      var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+
+
+      google.visualization.events.addListener(chart, 'ready', function () {
+        var today = new Date(2023, 0, 5);
+        var chartDiv = document.getElementById('chart_div');
+        var chartWidth = chartDiv.offsetWidth;
+        var startDate = new Date(Math.min.apply(null, rows.map(row => row[3].getTime())));
+        var endDate = new Date(Math.max.apply(null, rows.map(row => row[4].getTime())));
+        var totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+        var todayOffset = (today - startDate) / (1000 * 60 * 60 * 24);
+        var todayPosition = (todayOffset / totalDays) * chartWidth +1;
+
+        var todayLine = document.getElementById('today-line');
+        todayLine.style.left = todayPosition + 'px';
+    });
+
+      chart.draw(data, options);
+    }
+  </script>
 
 {% endblock %}
 
