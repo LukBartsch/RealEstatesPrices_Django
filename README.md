@@ -33,7 +33,8 @@ The database also stores historical data on real estates prices (since 2006) whi
 
 The application is a single-page website where the user can select the city, market type and data type. The Chart.js library was used to generate line charts.
 
-![image](https://github.com/user-attachments/assets/04e2edf4-5afe-4f57-b9c1-a655342898de)
+![image](https://github.com/user-attachments/assets/9cb71dbc-27bc-4cb2-be77-4e289ce708b4)
+
 
 
 Below the graph there is also information in a table about the current average prices of apartments per square meter. And information about the average area or number of rooms.
