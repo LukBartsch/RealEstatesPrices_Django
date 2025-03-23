@@ -88,16 +88,8 @@ if DEBUG:
     ]
 
 
-
-#DB_FILE_PATH = os.path.join(base_dir, os.environ.get('DB_FILE_PATH')) # base_dir / os.environ.get('DB_FILE_PATH')
-#SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') + os.environ.get('DB_FILE_PATH')
-
-
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-
 
 DATABASES = {
     'default': {
@@ -109,10 +101,6 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
-
-#DB_FILE_PATH=22021_RE_prices
-#SQLALCHEMY_DATABASE_URI=mysql://22021:BiegoweSwiry22@sportoweswiry.atthost24.pl/
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
